@@ -13,6 +13,7 @@ const courseSchema = new mongoose.Schema(
         },
         phoneNumber: String,
         website: String,
+        hours: Array,
         courseId: {
             type: String,
             required: true
