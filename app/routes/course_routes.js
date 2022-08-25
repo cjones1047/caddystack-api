@@ -44,20 +44,29 @@ router.get('/examples', requireToken, (req, res, next) => {
 })
 
 // SHOW
-router.get('/course/:courseId', (req, res, next) => {
+router.get('/course/:courseId/:userId', (req, res, next) => {
 	// req.params.courseId will be set based on the `:courseId` in the route
-	Course.findOne({courseId: req.params.courseId})
+	Course.find({courseId: req.params.courseId, owner: req.params.userId})
 		.then(handle404)
-		// if `findOne` is succesful, respond with 200 and "example" JSON
+        // findOne first sees if the course exists for the current user
+		// if `findOne` is succesful, respond with 200 and "course" JSON
 		.then((course) => res.status(200).json({ course: course.toObject() }))
 		// if an error occurs, pass it to the handler
-		.catch(next)
+		.catch(() => {
+            Course.findOne({courseId: req.params.courseId})
+                .then(handle404)
+                // if initial `findOne` is unsuccessful but subsequent findOne finds course even though it was added by a different user, respond with 200 and "course" JSON
+		        .then((course) => res.status(200).json({ course: course.toObject() }))
+                // if an error occurs, pass it to the handler
+		        .catch(next)
+        })
 })
 
 // CREATE
-router.post('/course', requireToken, (req, res, next) => {
+router.post('/course/:userId', (req, res, next) => {
 	// set owner of new course to be current user
-	req.body.course.owner = req.user.id
+    req.body.course._id = null
+	req.body.course.owner = req.params.userId
 
 	Course.create(req.body.course)
 		// respond to succesful `create` with status 201 and JSON of new "course"
@@ -71,7 +80,6 @@ router.post('/course', requireToken, (req, res, next) => {
 })
 
 // UPDATE
-// PATCH /examples/5a7db6c74d55bc51bdf39793
 router.patch('/examples/:id', requireToken, removeBlanks, (req, res, next) => {
 	// if the client attempts to change the `owner` property by including a new
 	// owner, prevent that by deleting that key/value pair
@@ -93,17 +101,17 @@ router.patch('/examples/:id', requireToken, removeBlanks, (req, res, next) => {
 		.catch(next)
 })
 
-// DESTROY
-// DELETE /examples/5a7db6c74d55bc51bdf39793
-router.delete('/examples/:id', requireToken, (req, res, next) => {
-	Example.findById(req.params.id)
+// DELETE
+router.delete('/course/:courseId', requireToken, (req, res, next) => {
+    const userId = req.user.id
+	Course.findOneAndRemove({courseId: req.params.courseId, owner: userId})
 		.then(handle404)
-		.then((example) => {
-			// throw an error if current user doesn't own `example`
-			requireOwnership(req, example)
-			// delete the example ONLY IF the above didn't throw
-			example.deleteOne()
-		})
+		// .then((course) => {
+		// 	// throw an error if current user doesn't own `example`
+		// 	// requireOwnership(req, course)
+		// 	// delete the example ONLY IF the above didn't throw
+		// 	course.deleteOne()
+		// })
 		// send back 204 and no content if the deletion succeeded
 		.then(() => res.sendStatus(204))
 		// if an error occurs, pass it to the handler
