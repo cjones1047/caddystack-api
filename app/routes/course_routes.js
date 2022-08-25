@@ -46,28 +46,19 @@ router.get('/examples', requireToken, (req, res, next) => {
 // SHOW
 router.get('/course/:courseId/:userId', (req, res, next) => {
 	// req.params.courseId will be set based on the `:courseId` in the route
-	Course.find().and([{ courseId: req.params.courseId}, { owner: req.params.userId}])
+	Course.findOne().and([{ courseId: req.params.courseId}, { owner: req.params.userId}])
 		.then(handle404)
         // findOne first sees if the course exists for the current user
 		// if `findOne` is succesful, respond with 200 and "course" JSON
 		.then((course) => res.status(200).json({ course: course.toObject() }))
 		// if an error occurs, pass it to the handler
-		.catch(() => {
-            Course.findOne({courseId: req.params.courseId})
-                .then(handle404)
-                // if initial `findOne` is unsuccessful but subsequent findOne finds course even though it was added by a different user, respond with 200 and "course" JSON
-		        .then((course) => res.status(200).json({ course: course.toObject() }))
-                // if an error occurs, pass it to the handler
-		        .catch(next)
-        })
+		.catch(next)
 })
 
 // CREATE
-router.post('/course/:userId', (req, res, next) => {
+router.post('/course', requireToken, (req, res, next) => {
 	// set owner of new course to be current user
-    req.body.course._id = null
-	req.body.course.owner = req.params.userId
-    console.log(req.body.course)
+	req.body.course.owner = req.user.id
 
 	Course.create(req.body.course)
 		// respond to succesful `create` with status 201 and JSON of new "course"
