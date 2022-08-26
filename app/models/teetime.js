@@ -31,6 +31,10 @@ const teetimeSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        courseName: {
+            type: String,
+            required: true
+        },
         // comments:[commentSchema],
         owner:{
             type: mongoose.Schema.Types.ObjectId,
