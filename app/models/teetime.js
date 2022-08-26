@@ -11,10 +11,22 @@ const teetimeSchema = new mongoose.Schema(
             type: Date,
             required: true
         },
-        golfers: Number,
-        carts: Number,
-        askPrice: Number,
-        increment: Number,
+        golfers: {
+            type: Number,
+            default: 0
+        },
+        carts: {
+            type: Number,
+            default: 0
+        },
+        askPrice: {
+            type: Number,
+            required: true
+        },
+        increment: {
+            type: Number,
+            required: true
+        },
         courseId: {
             type: String,
             required: true
