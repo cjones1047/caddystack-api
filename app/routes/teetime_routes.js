@@ -43,13 +43,19 @@ router.get('/examples', requireToken, (req, res, next) => {
 })
 
 // SHOW
-router.get('/example/:courseId/:userId', (req, res, next) => {
+router.get('/teetime/:courseId', (req, res, next) => {
 	// req.params.courseId will be set based on the `:courseId` in the route
-	Course.findOne().and([{ courseId: req.params.courseId}, { owner: req.params.userId}])
+	Teetime.find({courseId: req.params.courseId})
 		.then(handle404)
         // findOne first sees if the course exists for the current user
 		// if `findOne` is succesful, respond with 200 and "course" JSON
-		.then((course) => res.status(200).json({ course: course.toObject() }))
+        .then((teetimes) => {
+			// `examples` will be an array of Mongoose documents
+			// we want to convert each one to a POJO, so we use `.map` to
+			// apply `.toObject` to each one
+			return teetimes.map((teetime) => teetime.toObject())
+		})
+		.then((teetimes) => res.status(200).json({ teetimes: teetimes }))
 		// if an error occurs, pass it to the handler
 		.catch(next)
 })
