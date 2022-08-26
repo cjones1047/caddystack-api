@@ -13,6 +13,8 @@ const teetimeSchema = new mongoose.Schema(
         },
         golfers: Number,
         carts: Number,
+        askPrice: Number,
+        increment: Number,
         courseId: {
             type: String,
             required: true
