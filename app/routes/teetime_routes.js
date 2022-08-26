@@ -99,19 +99,14 @@ router.patch('/examples/:id', requireToken, removeBlanks, (req, res, next) => {
 })
 
 // DELETE
-router.delete('/example/:courseId', requireToken, (req, res, next) => {
-    const userId = req.user.id
-	Course.deleteOne().and([{ courseId: req.params.courseId}, { owner: userId}])
+router.delete('/books/:id', requireToken, (req, res, next) => {
+	Teetime.findById(req.params.id)
 		.then(handle404)
-		// .then((course) => {
-		// 	// throw an error if current user doesn't own `example`
-		// 	// requireOwnership(req, course)
-		// 	// delete the example ONLY IF the above didn't throw
-		// 	course.deleteOne(course._id)
-		// })
-		// send back 204 and no content if the deletion succeeded
+		.then((teetime) => {
+			requireOwnership(req, teetime)
+			teetime.deleteOne()
+		})
 		.then(() => res.sendStatus(204))
-		// if an error occurs, pass it to the handler
 		.catch(next)
 })
 

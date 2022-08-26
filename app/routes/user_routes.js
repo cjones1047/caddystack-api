@@ -17,6 +17,8 @@ const BadCredentialsError = errors.BadCredentialsError
 
 const User = require('../models/user')
 
+const removeBlanks = require('../../lib/remove_blank_fields')
+
 // passing this as a second argument to `router.<verb>` will make it
 // so that a token MUST be passed for that route to be available
 // it will also set `res.user`
@@ -24,6 +26,12 @@ const requireToken = passport.authenticate('bearer', { session: false })
 
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
+
+router.get('/owner/:id', (req, res, next) => {
+	User.findById(req.params.id)
+		.then((owner) => res.status(200).json({ owner: owner.toObject() }))
+		.catch(next)
+})
 
 // SIGN UP
 // POST /sign-up
