@@ -99,7 +99,7 @@ router.patch('/teetime/:id', requireToken, removeBlanks, (req, res, next) => {
 })
 
 // DELETE
-router.delete('/books/:id', requireToken, (req, res, next) => {
+router.delete('/teetime/:id', requireToken, (req, res, next) => {
 	Teetime.findById(req.params.id)
 		.then(handle404)
 		.then((teetime) => {
