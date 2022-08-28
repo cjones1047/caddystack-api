@@ -27,22 +27,6 @@ const requireToken = passport.authenticate('bearer', { session: false })
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
 
-// INDEX
-// GET /examples
-router.get('/examples', requireToken, (req, res, next) => {
-	Example.find()
-		.then((examples) => {
-			// `examples` will be an array of Mongoose documents
-			// we want to convert each one to a POJO, so we use `.map` to
-			// apply `.toObject` to each one
-			return examples.map((example) => example.toObject())
-		})
-		// respond with status 200 and JSON of the examples
-		.then((examples) => res.status(200).json({ examples: examples }))
-		// if an error occurs, pass it to the handler
-		.catch(next)
-})
-
 // SHOW
 router.get('/course/:courseId/:userId', (req, res, next) => {
 	// req.params.courseId will be set based on the `:courseId` in the route
@@ -51,6 +35,21 @@ router.get('/course/:courseId/:userId', (req, res, next) => {
         // findOne first sees if the course exists for the current user
 		// if `findOne` is succesful, respond with 200 and "course" JSON
 		.then((course) => res.status(200).json({ course: course.toObject() }))
+		// if an error occurs, pass it to the handler
+		.catch(next)
+})
+
+// INDEX
+router.get('/course', requireToken, (req, res, next) => {
+	Course.find({owner: req.user.id})
+		.then((courses) => {
+			// `courses` will be an array of Mongoose documents
+			// we want to convert each one to a POJO, so we use `.map` to
+			// apply `.toObject` to each one
+			return courses.map((course) => course.toObject())
+		})
+		// respond with status 200 and JSON of the courses
+		.then((courses) => res.status(200).json({ courses: courses }))
 		// if an error occurs, pass it to the handler
 		.catch(next)
 })
