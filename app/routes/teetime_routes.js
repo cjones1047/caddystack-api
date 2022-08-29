@@ -42,7 +42,7 @@ router.get('/examples', requireToken, (req, res, next) => {
 		.catch(next)
 })
 
-// SHOW
+// INDEX
 router.get('/teetime/:courseId', (req, res, next) => {
 	// req.params.courseId will be set based on the `:courseId` in the route
 	Teetime.find({courseId: req.params.courseId})
@@ -78,16 +78,16 @@ router.post('/teetime', requireToken, (req, res, next) => {
 
 // UPDATE
 router.patch('/teetime/:id', requireToken, removeBlanks, (req, res, next) => {
-	// if the client attempts to change the `owner` property by including a new
-	// owner, prevent that by deleting that key/value pair
-	delete req.body.teetime.owner
+	// if the client attempts to change the `owner` property by including a new owner, the following prevents that by deleting that key/value pair
+	    // delete req.body.teetime.owner
+    // however, we want a teetime to change owners when one owner accepts a current bid, so we're editing this ^^^ out 
 
 	Teetime.findById(req.params.id)
 		.then(handle404)
 		.then((teetime) => {
 			// pass the `req` object and the Mongoose record to `requireOwnership`
 			// it will throw an error if the current user isn't the owner
-			requireOwnership(req, teetime)
+			    // requireOwnership(req, teetime)
 
 			// pass the result of Mongoose's `.update` to the next `.then`
 			return teetime.updateOne(req.body.teetime)

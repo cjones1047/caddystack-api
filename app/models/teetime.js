@@ -35,6 +35,13 @@ const teetimeSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        lastBidder: {
+            type: String,
+            required: true
+        },
+        lastBidderPrice: {
+            type: Number
+        },
         // comments:[commentSchema],
         owner:{
             type: mongoose.Schema.Types.ObjectId,
