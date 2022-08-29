@@ -45,7 +45,7 @@ router.get('/examples', requireToken, (req, res, next) => {
 // INDEX
 router.get('/teetime/:courseId', (req, res, next) => {
 	// req.params.courseId will be set based on the `:courseId` in the route
-	Teetime.find({courseId: req.params.courseId})
+	Teetime.find({courseId: req.params.courseId}).sort({date: 'asc'})
 		.then(handle404)
         // findOne first sees if the course exists for the current user
 		// if `findOne` is succesful, respond with 200 and "course" JSON
