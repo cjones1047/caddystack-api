@@ -14,6 +14,7 @@ const courseSchema = new mongoose.Schema(
         phoneNumber: String,
         website: String,
         hours: Array,
+        note: String,
         courseId: {
             type: String,
             required: true
