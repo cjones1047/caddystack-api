@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-// const commentSchema = require('./comment')
-// const likeSchema = require('./like')
 const teetimeSchema = new mongoose.Schema(
     {
         date: {
@@ -42,7 +40,6 @@ const teetimeSchema = new mongoose.Schema(
         lastBidderPrice: {
             type: Number
         },
-        // comments:[commentSchema],
         owner:{
             type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',

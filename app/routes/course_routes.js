@@ -98,9 +98,9 @@ router.delete('/course/:courseId', requireToken, (req, res, next) => {
 	Course.deleteOne().and([{ courseId: req.params.courseId}, { owner: userId}])
 		.then(handle404)
 		// .then((course) => {
-		// 	// throw an error if current user doesn't own `example`
+		// 	// throw an error if current user doesn't own `course`
 		// 	// requireOwnership(req, course)
-		// 	// delete the example ONLY IF the above didn't throw
+		// 	// delete the course ONLY IF the above didn't throw
 		// 	course.deleteOne(course._id)
 		// })
 		// send back 204 and no content if the deletion succeeded

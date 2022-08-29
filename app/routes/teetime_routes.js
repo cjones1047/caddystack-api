@@ -31,7 +31,7 @@ const router = express.Router()
 router.get('/all-my-teetimes', requireToken, (req, res, next) => {
 	Teetime.find({owner: req.user.id}).sort({ date: 'asc', courseName: 'desc' })
 		.then((teetimes) => {
-			// `examples` will be an array of Mongoose documents
+			// `teetimes` will be an array of Mongoose documents
 			// we want to convert each one to a POJO, so we use `.map` to
 			// apply `.toObject` to each one
 			return teetimes.map((teetime) => teetime.toObject())
@@ -48,9 +48,9 @@ router.get('/teetime/:courseId', (req, res, next) => {
 	Teetime.find({courseId: req.params.courseId}).sort({date: 'asc'})
 		.then(handle404)
         // findOne first sees if the course exists for the current user
-		// if `findOne` is succesful, respond with 200 and "course" JSON
+		// if `findOne` is succesful, respond with 200 and "teetime" JSON
         .then((teetimes) => {
-			// `examples` will be an array of Mongoose documents
+			// `teetimes` will be an array of Mongoose documents
 			// we want to convert each one to a POJO, so we use `.map` to
 			// apply `.toObject` to each one
 			return teetimes.map((teetime) => teetime.toObject())
@@ -66,7 +66,7 @@ router.post('/teetime', requireToken, (req, res, next) => {
 	req.body.teetime.owner = req.user.id
 
 	Teetime.create(req.body.teetime)
-		// respond to succesful `create` with status 201 and JSON of new "course"
+		// respond to succesful `create` with status 201 and JSON of new "teetime"
 		.then((teetime) => {
 			res.status(201).json({ teetime: teetime.toObject() })
 		})

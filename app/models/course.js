@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-// const commentSchema = require('./comment')
-// const likeSchema = require('./like')
 const courseSchema = new mongoose.Schema(
     {
         name: {
@@ -19,7 +17,6 @@ const courseSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        // comments:[commentSchema],
         owner:{
             type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
