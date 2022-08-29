@@ -28,16 +28,16 @@ const requireToken = passport.authenticate('bearer', { session: false })
 const router = express.Router()
 
 // INDEX
-router.get('/examples', requireToken, (req, res, next) => {
-	Example.find()
-		.then((examples) => {
+router.get('/all-my-teetimes', requireToken, (req, res, next) => {
+	Teetime.find({owner: req.user.id}).sort({ date: 'asc', courseName: 'desc' })
+		.then((teetimes) => {
 			// `examples` will be an array of Mongoose documents
 			// we want to convert each one to a POJO, so we use `.map` to
 			// apply `.toObject` to each one
-			return examples.map((example) => example.toObject())
+			return teetimes.map((teetime) => teetime.toObject())
 		})
-		// respond with status 200 and JSON of the examples
-		.then((examples) => res.status(200).json({ examples: examples }))
+		// respond with status 200 and JSON of the teetimes
+		.then((teetimes) => res.status(200).json({ teetimes: teetimes }))
 		// if an error occurs, pass it to the handler
 		.catch(next)
 })
