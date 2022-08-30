@@ -27,6 +27,7 @@ const requireToken = passport.authenticate('bearer', { session: false })
 // instantiate a router (mini app that only handles routes)
 const router = express.Router()
 
+// SHOW
 router.get('/owner/:id', (req, res, next) => {
 	User.findById(req.params.id)
 		.then((owner) => res.status(200).json({ owner: owner.toObject() }))
