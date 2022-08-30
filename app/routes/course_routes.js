@@ -41,7 +41,7 @@ router.get('/course/:courseId/:userId', (req, res, next) => {
 
 // INDEX
 router.get('/course', requireToken, (req, res, next) => {
-	Course.find({owner: req.user.id})
+	Course.find({owner: req.user.id}).sort({ name: 'asc' })
 		.then((courses) => {
 			// `courses` will be an array of Mongoose documents
 			// we want to convert each one to a POJO, so we use `.map` to
